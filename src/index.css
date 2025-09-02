@@ -198,9 +198,10 @@
     z-index: -1;
   }
 
-  /* Custom Scrollbar */
+    /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -214,6 +215,16 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary));
+  }
+
+  /* Hide scrollbar for Netflix-style horizontal scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 

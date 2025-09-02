@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react';
+import NetflixClone from '@/components/NetflixClone';
 
 const ProjectDemo = () => {
   const location = useLocation();
@@ -289,7 +290,8 @@ const ProjectDemo = () => {
     <>
       {demoType === 'portfolio-dashboard' && renderPortfolioDashboard()}
       {demoType === 'design-system' && renderDesignSystem()}
-      {!['portfolio-dashboard', 'design-system'].includes(demoType) && renderDefault()}
+      {demoType === 'netflix-clone' && <NetflixClone />}
+      {!['portfolio-dashboard', 'design-system', 'netflix-clone'].includes(demoType) && renderDefault()}
     </>
   );
 };

@@ -346,6 +346,8 @@ const Portfolio = () => {
                           window.open('/demo?type=portfolio-dashboard', '_blank');
                         } else if (project.title === 'Design System') {
                           window.open('/demo?type=design-system', '_blank');
+                        } else if (project.title === 'Netflix Clone') {
+                          window.open('/demo?type=netflix-clone', '_blank');
                         } else {
                           // Comment: Add specific project demo links here
                           window.open(project.demoUrl, '_blank');
