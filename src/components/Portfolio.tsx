@@ -28,9 +28,18 @@ import {
   Heart
 } from 'lucide-react';
 
+// Import AI-generated images
+import profileAvatar from '@/assets/profile-avatar.jpg';
+import portfolioDashboardThumb from '@/assets/portfolio-dashboard-thumb.jpg';
+import designSystemThumb from '@/assets/design-system-thumb.jpg';
+import netflixCloneThumb from '@/assets/netflix-clone-thumb.jpg';
+import gameEngineThumb from '@/assets/game-engine-thumb.jpg';
+
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('hero');
   const [isVisible, setIsVisible] = useState({});
+  const [animatedText, setAnimatedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Intersection Observer for animations
   useEffect(() => {
@@ -53,6 +62,21 @@ const Portfolio = () => {
 
     return () => observer.disconnect();
   }, []);
+
+  // Animated text effect
+  useEffect(() => {
+    const text = 'Developer ⚡ Designer ⚡ Innovator';
+    const interval = setInterval(() => {
+      if (currentIndex < text.length) {
+        setAnimatedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [currentIndex]);
 
   const skills = [
     { name: 'React', level: 85 },
@@ -84,7 +108,7 @@ const Portfolio = () => {
       title: 'Portfolio Dashboard',
       category: 'Web',
       description: 'Trading view dashboard with P&L tracking and forex trades',
-      image: '/api/placeholder/400/250',
+      image: portfolioDashboardThumb,
       demoUrl: '#', // Comment: Portfolio dashboard will show trading interface
       featured: true
     },
@@ -93,7 +117,7 @@ const Portfolio = () => {
       title: 'Game Engine',
       category: 'Game',
       description: 'Custom game engine built with modern technologies',
-      image: '/api/placeholder/400/250',
+      image: gameEngineThumb,
       demoUrl: '#', // Comment: Add game engine demo link here
       featured: false
     },
@@ -102,7 +126,7 @@ const Portfolio = () => {
       title: 'Design System',
       category: 'UI/UX',
       description: 'Comprehensive design system with reusable components',
-      image: '/api/placeholder/400/250',
+      image: designSystemThumb,
       demoUrl: '#', // Comment: Design system will be generated dynamically
       featured: false
     },
@@ -111,7 +135,7 @@ const Portfolio = () => {
       title: 'Netflix Clone',
       category: 'Web',
       description: 'Full-featured Netflix clone with streaming capabilities',
-      image: '/api/placeholder/400/250',
+      image: netflixCloneThumb,
       demoUrl: '#', // Comment: Add Netflix clone link here
       featured: true
     }
@@ -181,10 +205,12 @@ const Portfolio = () => {
         
         <div className="container mx-auto px-6 text-center z-10">
           <div className="float">
-            <div className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-primary to-secondary p-1">
-              <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
-                <span className="text-4xl font-bold gradient-text">A</span>
-              </div>
+            <div className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden glow">
+              <img 
+                src={profileAvatar} 
+                alt="ANURAG - Profile Avatar" 
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
           
@@ -192,12 +218,9 @@ const Portfolio = () => {
             <span className="gradient-text">ANURAG</span>
           </h1>
           
-          <div className="text-2xl md:text-3xl mb-8 text-muted-foreground animate-slide-up">
-            <span>Developer</span>
-            <span className="text-primary mx-4">⚡</span>
-            <span>Designer</span>
-            <span className="text-secondary mx-4">⚡</span>
-            <span>Innovator</span>
+          <div className="text-2xl md:text-3xl mb-8 text-muted-foreground animate-slide-up min-h-[3rem]">
+            {animatedText}
+            <span className="animate-pulse">|</span>
           </div>
           
           <p className="text-xl mb-12 max-w-2xl mx-auto animate-slide-up text-muted-foreground">
@@ -321,9 +344,11 @@ const Portfolio = () => {
             {projects.map((project) => (
               <div key={project.id} className="glass-card group">
                 <div className="aspect-video bg-muted rounded-lg mb-4 overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                    <span className="text-muted-foreground">Project Preview</span>
-                  </div>
+                  <img 
+                    src={project.image} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
                 </div>
                 
                 <div className="space-y-3">
@@ -485,12 +510,10 @@ const Portfolio = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 bg-background border-t border-border">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-muted-foreground">
-            Made with <Heart className="inline h-4 w-4 text-red-500" /> by ANURAG
-          </p>
-        </div>
+      <footer className="py-8 bg-card/50 text-center">
+        <p className="text-muted-foreground">
+          Made ❤️ with <span className="gradient-text font-semibold">ANURAG</span>
+        </p>
       </footer>
     </div>
   );

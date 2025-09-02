@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { 
   Play, 
   Plus, 
@@ -15,7 +16,9 @@ import {
   Star,
   Calendar,
   Clock,
-  X
+  X,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface Movie {
@@ -37,6 +40,16 @@ const NetflixClone = () => {
   const navigate = useNavigate();
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAuth, setShowAuth] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [authForm, setAuthForm] = useState({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
 
   // Sample movie data
   const movies: Movie[] = [
@@ -144,6 +157,12 @@ const NetflixClone = () => {
 
   const featuredMovie = movies.find(movie => movie.featured) || movies[0];
 
+  // Filter movies based on search query
+  const filteredMovies = movies.filter(movie => 
+    movie.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    movie.genre.some(g => g.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
@@ -152,6 +171,28 @@ const NetflixClone = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLogin) {
+      // Mock login
+      setIsLoggedIn(true);
+      setShowAuth(false);
+    } else {
+      // Mock signup
+      if (authForm.password === authForm.confirmPassword) {
+        setIsLoggedIn(true);
+        setShowAuth(false);
+      } else {
+        alert('Passwords do not match');
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setAuthForm({ email: '', password: '', confirmPassword: '' });
+  };
 
   const MovieCard = ({ movie, size = 'normal' }: { movie: Movie; size?: 'small' | 'normal' | 'large' }) => {
     const [isHovered, setIsHovered] = useState(false);
@@ -314,15 +355,32 @@ const NetflixClone = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
-              <Search className="h-5 w-5" />
-            </Button>
+            <div className="relative">
+              <Input 
+                placeholder="Search titles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64 bg-black/50 border-white/20 text-white placeholder:text-gray-400"
+              />
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            </div>
             <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
               <Bell className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
-              <User className="h-5 w-5" />
-            </Button>
+            {isLoggedIn ? (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
+                  <User className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" onClick={handleLogout} className="text-white hover:text-gray-300">
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button onClick={() => setShowAuth(true)} className="bg-red-600 hover:bg-red-700">
+                Sign In
+              </Button>
+            )}
           </div>
         </div>
       </nav>
@@ -369,12 +427,34 @@ const NetflixClone = () => {
 
       {/* Content Rows */}
       <div className="relative z-10 -mt-32">
-        <MovieRow title="Trending Now" movies={movies.filter(m => m.trending)} />
-        <MovieRow title="Popular on Netflix" movies={movies.filter(m => m.popular)} />
-        <MovieRow title="Only on Netflix" movies={movies.slice(0, 6)} />
-        <MovieRow title="Continue Watching" movies={movies.slice(2, 8)} />
-        <MovieRow title="New Releases" movies={movies.slice(1, 7)} />
-        <MovieRow title="Top Picks for You" movies={movies.slice(3, 8)} />
+        {searchQuery ? (
+          <div className="px-4 md:px-16 mb-8">
+            <h2 className="text-white text-2xl font-semibold mb-6">
+              Search Results for "{searchQuery}"
+            </h2>
+            {filteredMovies.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {filteredMovies.map((movie) => (
+                  <MovieCard key={movie.id} movie={movie} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-400 text-lg">No movies found for "{searchQuery}"</p>
+                <p className="text-gray-500 text-sm mt-2">Try different keywords</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <MovieRow title="Trending Now" movies={movies.filter(m => m.trending)} />
+            <MovieRow title="Popular on Netflix" movies={movies.filter(m => m.popular)} />
+            <MovieRow title="Only on Netflix" movies={movies.slice(0, 6)} />
+            <MovieRow title="Continue Watching" movies={movies.slice(2, 8)} />
+            <MovieRow title="New Releases" movies={movies.slice(1, 7)} />
+            <MovieRow title="Top Picks for You" movies={movies.slice(3, 8)} />
+          </>
+        )}
       </div>
 
       {/* Footer */}
@@ -408,6 +488,87 @@ const NetflixClone = () => {
           </div>
         </div>
       </footer>
+
+      {/* Authentication Modal */}
+      {showAuth && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-black border border-white/20 rounded-lg p-8 w-full max-w-md">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-white">
+                {isLogin ? 'Sign In' : 'Sign Up'}
+              </h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowAuth(false)}
+                className="text-white hover:text-gray-300 p-2"
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleAuthSubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  value={authForm.email}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
+                  className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400"
+                  required
+                />
+              </div>
+              
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
+                  className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+              
+              {!isLogin && (
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Confirm Password"
+                    value={authForm.confirmPassword}
+                    onChange={(e) => setAuthForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    className="bg-gray-800 border-gray-600 text-white placeholder:text-gray-400"
+                    required
+                  />
+                </div>
+              )}
+              
+              <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                {isLogin ? 'Sign In' : 'Sign Up'}
+              </Button>
+            </form>
+            
+            <div className="mt-4 text-center">
+              <p className="text-gray-400">
+                {isLogin ? "New to Netflix? " : "Already have an account? "}
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-white hover:underline"
+                >
+                  {isLogin ? "Sign up now" : "Sign in"}
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Movie Modal */}
       {selectedMovie && (
