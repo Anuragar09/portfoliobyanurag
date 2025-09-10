@@ -21,6 +21,19 @@ import {
   EyeOff
 } from 'lucide-react';
 
+// Import Netflix movie posters
+import strangerThingsImg from '@/assets/netflix/stranger-things.jpg';
+import theCrownImg from '@/assets/netflix/the-crown.jpg';
+import blackMirrorImg from '@/assets/netflix/black-mirror.jpg';
+import moneyHeistImg from '@/assets/netflix/money-heist.jpg';
+import theWitcherImg from '@/assets/netflix/the-witcher.jpg';
+import ozarkImg from '@/assets/netflix/ozark.jpg';
+import wednesdayImg from '@/assets/netflix/wednesday.jpg';
+import squidGameImg from '@/assets/netflix/squid-game.jpg';
+import bridgertonImg from '@/assets/netflix/bridgerton.jpg';
+import darkImg from '@/assets/netflix/dark.jpg';
+import narcosImg from '@/assets/netflix/narcos.jpg';
+
 interface Movie {
   id: number;
   title: string;
@@ -61,8 +74,8 @@ const NetflixClone = () => {
       rating: "TV-14",
       duration: "55m",
       genre: ["Sci-Fi", "Horror", "Drama"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: strangerThingsImg,
+      banner: strangerThingsImg,
       featured: true,
       trending: true,
       popular: true
@@ -75,8 +88,8 @@ const NetflixClone = () => {
       rating: "TV-MA",
       duration: "58m",
       genre: ["Drama", "Biography", "History"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: theCrownImg,
+      banner: theCrownImg,
       trending: true,
       popular: true
     },
@@ -88,8 +101,8 @@ const NetflixClone = () => {
       rating: "TV-MA",
       duration: "60m",
       genre: ["Crime", "Drama", "Thriller"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: ozarkImg,
+      banner: ozarkImg,
       popular: true
     },
     {
@@ -100,8 +113,8 @@ const NetflixClone = () => {
       rating: "TV-14",
       duration: "50m",
       genre: ["Comedy", "Horror", "Mystery"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: wednesdayImg,
+      banner: wednesdayImg,
       trending: true
     },
     {
@@ -112,8 +125,8 @@ const NetflixClone = () => {
       rating: "TV-MA",
       duration: "70m",
       genre: ["Action", "Crime", "Drama"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: moneyHeistImg,
+      banner: moneyHeistImg,
       popular: true
     },
     {
@@ -124,8 +137,8 @@ const NetflixClone = () => {
       rating: "TV-MA",
       duration: "60m",
       genre: ["Thriller", "Drama", "Action"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: squidGameImg,
+      banner: squidGameImg,
       trending: true,
       popular: true
     },
@@ -137,8 +150,8 @@ const NetflixClone = () => {
       rating: "TV-MA",
       duration: "65m",
       genre: ["Drama", "Romance"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: bridgertonImg,
+      banner: bridgertonImg,
       popular: true
     },
     {
@@ -149,9 +162,45 @@ const NetflixClone = () => {
       rating: "TV-MA",
       duration: "60m",
       genre: ["Fantasy", "Action", "Adventure"],
-      thumbnail: "/api/placeholder/300/450",
-      banner: "/api/placeholder/1920/1080",
+      thumbnail: theWitcherImg,
+      banner: theWitcherImg,
       trending: true
+    },
+    {
+      id: 9,
+      title: "Black Mirror",
+      description: "An anthology series exploring a twisted, high-tech multiverse where humanity's greatest innovations and darkest instincts collide.",
+      year: 2021,
+      rating: "TV-MA",
+      duration: "60m",
+      genre: ["Sci-Fi", "Thriller", "Drama"],
+      thumbnail: blackMirrorImg,
+      banner: blackMirrorImg,
+      popular: true
+    },
+    {
+      id: 10,
+      title: "Dark",
+      description: "A family saga with a supernatural twist, set in a German town where the disappearance of children exposes the relationships among four families.",
+      year: 2020,
+      rating: "TV-MA",
+      duration: "60m",
+      genre: ["Sci-Fi", "Mystery", "Thriller"],
+      thumbnail: darkImg,
+      banner: darkImg,
+      trending: true
+    },
+    {
+      id: 11,
+      title: "Narcos",
+      description: "A chronicled look at the criminal exploits of Colombian drug lord Pablo Escobar, as well as the many other drug kingpins who plagued the country.",
+      year: 2019,
+      rating: "TV-MA",
+      duration: "50m",
+      genre: ["Crime", "Biography", "Drama"],
+      thumbnail: narcosImg,
+      banner: narcosImg,
+      popular: true
     }
   ];
 
@@ -211,6 +260,11 @@ const NetflixClone = () => {
         onClick={() => setSelectedMovie(movie)}
       >
         <div className="w-full h-full bg-gradient-to-br from-red-900/20 to-black/60 rounded-lg overflow-hidden relative">
+          <img 
+            src={movie.thumbnail} 
+            alt={movie.title}
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           
           <div className="absolute bottom-0 left-0 right-0 p-3">
@@ -258,7 +312,12 @@ const NetflixClone = () => {
     <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
       <div className="bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="relative">
-          <div className="aspect-video bg-gradient-to-br from-red-900/20 to-black/60 relative">
+          <div className="aspect-video bg-gradient-to-br from-red-900/20 to-black/60 relative overflow-hidden">
+            <img 
+              src={movie.banner} 
+              alt={movie.title}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
             <Button
               variant="ghost"
@@ -387,6 +446,13 @@ const NetflixClone = () => {
 
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center">
+        <div className="absolute inset-0 overflow-hidden">
+          <img 
+            src={featuredMovie.banner} 
+            alt={featuredMovie.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-br from-red-900/30 to-black/80"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>

@@ -30,6 +30,7 @@ import {
 
 // Import AI-generated images
 import profileAvatar from '@/assets/profile-avatar.jpg';
+import aiChatThumb from '@/assets/ai-chat-thumb.jpg';
 import portfolioDashboardThumb from '@/assets/portfolio-dashboard-thumb.jpg';
 import designSystemThumb from '@/assets/design-system-thumb.jpg';
 import netflixCloneThumb from '@/assets/netflix-clone-thumb.jpg';
@@ -99,7 +100,7 @@ const Portfolio = () => {
       title: 'AI Chat Application',
       category: 'Web',
       description: 'Advanced AI-powered chat application with real-time messaging',
-      image: '/api/placeholder/400/250',
+      image: aiChatThumb,
       demoUrl: '#', // Comment: Add AI chat application link here
       featured: true
     },
