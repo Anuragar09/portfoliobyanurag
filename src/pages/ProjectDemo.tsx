@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, BarChart3 } from 'lucide-react';
 import NetflixClone from '@/components/NetflixClone';
 import DesignSystemDemo from '@/components/DesignSystemDemo';
+import TradingDashboard from '@/components/TradingDashboard';
 
 const ProjectDemo = () => {
   const [searchParams] = useSearchParams();
@@ -13,13 +14,17 @@ const ProjectDemo = () => {
   if (type === 'netflix-clone') {
     return <NetflixClone />;
   }
-
+  
   if (type === 'design-system') {
     return <DesignSystemDemo />;
   }
+  
+  if (type === 'portfolio-dashboard') {
+    return <TradingDashboard />;
+  }
 
   // Default fallback - shows portfolio dashboard
-  return <PortfolioDashboard />;
+  return <TradingDashboard />;
 };
 
 const PortfolioDashboard = () => {

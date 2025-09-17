@@ -41,8 +41,10 @@ const Portfolio = () => {
   const [isVisible, setIsVisible] = useState({});
   const [animatedText, setAnimatedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [counters, setCounters] = useState({ years: 0, projects: 0, clients: 0 });
+  const [hasCounterStarted, setHasCounterStarted] = useState(false);
 
-  // Intersection Observer for animations
+  // Intersection Observer for animations and counter
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -52,6 +54,11 @@ const Portfolio = () => {
               ...prev,
               [entry.target.id]: true
             }));
+            
+            // Start counter animation when stats section is visible
+            if (entry.target.id === 'stats' && !hasCounterStarted) {
+              setHasCounterStarted(true);
+            }
           }
         });
       },
@@ -62,7 +69,37 @@ const Portfolio = () => {
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
-  }, []);
+  }, [hasCounterStarted]);
+
+  // Counter animation effect
+  useEffect(() => {
+    if (hasCounterStarted) {
+      const targets = { years: 3, projects: 20, clients: 50 };
+      const duration = 2000; // 2 seconds
+      const steps = 60;
+      const stepDuration = duration / steps;
+      
+      let currentStep = 0;
+      const interval = setInterval(() => {
+        currentStep++;
+        const progress = currentStep / steps;
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        
+        setCounters({
+          years: Math.floor(targets.years * easeOutQuart),
+          projects: Math.floor(targets.projects * easeOutQuart),
+          clients: Math.floor(targets.clients * easeOutQuart)
+        });
+        
+        if (currentStep >= steps) {
+          clearInterval(interval);
+          setCounters(targets); // Ensure exact final values
+        }
+      }, stepDuration);
+      
+      return () => clearInterval(interval);
+    }
+  }, [hasCounterStarted]);
 
   // Animated text effect
   useEffect(() => {
@@ -215,16 +252,16 @@ const Portfolio = () => {
             </div>
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 animate-slide-up">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 animate-slide-up">
             <span className="gradient-text">ANURAG</span>
           </h1>
           
-          <div className="text-2xl md:text-3xl mb-8 text-muted-foreground animate-slide-up min-h-[3rem]">
+          <div className="text-xl sm:text-2xl md:text-3xl mb-8 text-muted-foreground animate-slide-up min-h-[3rem]">
             {animatedText}
             <span className="animate-pulse">|</span>
           </div>
           
-          <p className="text-xl mb-12 max-w-2xl mx-auto animate-slide-up text-muted-foreground">
+          <p className="text-lg sm:text-xl mb-8 sm:mb-12 max-w-2xl mx-auto animate-slide-up text-muted-foreground px-4">
             Crafting next-generation digital experiences with cutting-edge technology and creative design
           </p>
           
@@ -254,49 +291,51 @@ const Portfolio = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-card/50">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section id="stats" className="py-12 sm:py-20 bg-card/50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             <div className="text-center glass-card">
-              <div className="text-4xl font-bold gradient-text mb-2">3+</div>
-              <div className="text-muted-foreground">Years Experience</div>
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-2">{counters.years}+</div>
+              <div className="text-sm sm:text-base text-muted-foreground">Years Experience</div>
             </div>
             <div className="text-center glass-card">
-              <div className="text-4xl font-bold gradient-text mb-2">20+</div>
-              <div className="text-muted-foreground">Projects Completed</div>
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-2">{counters.projects}+</div>
+              <div className="text-sm sm:text-base text-muted-foreground">Projects Completed</div>
             </div>
             <div className="text-center glass-card">
-              <div className="text-4xl font-bold gradient-text mb-2">50+</div>
-              <div className="text-muted-foreground">Happy Clients</div>
+              <div className="text-3xl sm:text-4xl font-bold gradient-text mb-2">{counters.clients}+</div>
+              <div className="text-sm sm:text-base text-muted-foreground">Happy Clients</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-20">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16 gradient-text">Career Journey</h2>
+      <section id="experience" className="py-12 sm:py-20 relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-4xl font-bold text-center mb-8 sm:mb-16 gradient-text">Career Journey</h2>
           
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto space-y-6 sm:space-y-12">
             {experiences.map((exp, index) => (
-              <div key={index} className="relative mb-12">
-                <div className="glass-card">
-                  <div className="flex items-start gap-4">
+              <div key={index} className="relative">
+                <div className="glass-card overflow-hidden">
+                  <div className="flex flex-col sm:flex-row items-start gap-4">
                     <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
                       <Briefcase className="h-6 w-6 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold mb-2">{exp.title}</h3>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-primary font-medium">{exp.company}</span>
-                        <span className="text-muted-foreground">•</span>
-                        <span className="text-muted-foreground">{exp.period}</span>
+                    <div className="flex-1 w-full sm:w-auto">
+                      <div className="sticky-title-container">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-2 sticky-title">{exp.title}</h3>
                       </div>
-                      <p className="text-muted-foreground mb-4">{exp.description}</p>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                        <span className="text-primary font-medium">{exp.company}</span>
+                        <span className="hidden sm:inline text-muted-foreground">•</span>
+                        <span className="text-muted-foreground text-sm sm:text-base">{exp.period}</span>
+                      </div>
+                      <p className="text-muted-foreground mb-4 text-sm sm:text-base">{exp.description}</p>
                       <div className="flex flex-wrap gap-2">
                         {exp.achievements.map((achievement, idx) => (
-                          <Badge key={idx} variant="secondary" className="glass">
+                          <Badge key={idx} variant="secondary" className="glass text-xs sm:text-sm">
                             {achievement}
                           </Badge>
                         ))}
@@ -368,14 +407,15 @@ const Portfolio = () => {
                       variant="glass" 
                       className="flex-1"
                       onClick={() => {
-                        if (project.title === 'Portfolio Dashboard') {
+                        if (project.title === 'AI Chat Application') {
+                          window.open('https://asklybyanurag.netlify.app/', '_blank');
+                        } else if (project.title === 'Portfolio Dashboard') {
                           window.open('/demo?type=portfolio-dashboard', '_blank');
                         } else if (project.title === 'Design System') {
                           window.open('/demo?type=design-system', '_blank');
                         } else if (project.title === 'Netflix Clone') {
                           window.open('/demo?type=netflix-clone', '_blank');
                         } else {
-                          // Comment: Add specific project demo links here
                           window.open(project.demoUrl, '_blank');
                         }
                       }}
@@ -462,13 +502,19 @@ const Portfolio = () => {
               <div className="mt-8">
                 <h4 className="text-lg font-semibold mb-4">Connect With Me</h4>
                 <div className="flex gap-4">
-                  {/* Comment: Add LinkedIn link here */}
-                  <Button size="sm" variant="glass">
+                  <Button 
+                    size="sm" 
+                    variant="glass"
+                    onClick={() => window.open('https://www.linkedin.com/in/anurag-arora-56064a359/', '_blank')}
+                  >
                     <Linkedin className="h-4 w-4" />
                   </Button>
                   
-                  {/* Comment: Add GitHub link here */}
-                  <Button size="sm" variant="glass">
+                  <Button 
+                    size="sm" 
+                    variant="glass"
+                    onClick={() => window.open('https://github.com/Anuragar09?tab=repositories', '_blank')}
+                  >
                     <Github className="h-4 w-4" />
                   </Button>
                   
@@ -491,15 +537,12 @@ const Portfolio = () => {
                 Get my complete resume with detailed information about my experience, skills, and projects.
               </p>
               
-              {/* Comment: Add resume file here from laptop */}
               <Button 
                 variant="glow"
                 className="w-full" 
                 size="lg"
                 onClick={() => {
-                  // Comment: Add resume download functionality here
-                  // For now, we'll show an alert
-                  alert('Resume download will be available soon!');
+                  window.open('https://drive.google.com/file/d/1IMu-r6QB5pdAUhN2hWq2WfU05UiMde0N/view?usp=sharing', '_blank');
                 }}
               >
                 <Download className="h-5 w-5 mr-2" />
