@@ -61,14 +61,23 @@ const Portfolio = () => {
               [entry.target.id]: true
             }));
             
-            // Start counter animation when stats section is visible
             if (entry.target.id === 'stats' && !hasCounterStarted) {
               setHasCounterStarted(true);
+            }
+            if (entry.target.id === 'skills') {
+              // Re-trigger skills animation every time it enters view
+              setSkillsAnimated(false);
+              setAnimatedSkillLevels(skills.map(() => 0));
+              setTimeout(() => setSkillsAnimated(true), 50);
+            }
+          } else {
+            if (entry.target.id === 'skills') {
+              setAnimatedSkillLevels(skills.map(() => 0));
             }
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.2 }
     );
 
     const sections = document.querySelectorAll('section[id]');
@@ -76,6 +85,26 @@ const Portfolio = () => {
 
     return () => observer.disconnect();
   }, [hasCounterStarted]);
+
+  // Skills bar animation
+  useEffect(() => {
+    if (skillsAnimated) {
+      const duration = 1500;
+      const steps = 40;
+      let currentStep = 0;
+      const interval = setInterval(() => {
+        currentStep++;
+        const progress = Math.min(currentStep / steps, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setAnimatedSkillLevels(skills.map(s => Math.floor(s.level * eased)));
+        if (currentStep >= steps) {
+          clearInterval(interval);
+          setAnimatedSkillLevels(skills.map(s => s.level));
+        }
+      }, duration / steps);
+      return () => clearInterval(interval);
+    }
+  }, [skillsAnimated]);
 
   // Counter animation effect
   useEffect(() => {
