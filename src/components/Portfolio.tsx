@@ -29,12 +29,15 @@ import {
 } from 'lucide-react';
 
 // Import AI-generated images
-import profileAvatar from '@/assets/profile-avatar.jpg';
+import profileAvatarAsset from '@/assets/anurag-profile.jpg.asset.json';
+import resumeAsset from '@/assets/Anurag_Resume.pdf.asset.json';
 import aiChatThumb from '@/assets/ai-chat-thumb.jpg';
 import portfolioDashboardThumb from '@/assets/portfolio-dashboard-thumb.jpg';
 import designSystemThumb from '@/assets/design-system-thumb.jpg';
 import netflixCloneThumb from '@/assets/netflix-clone-thumb.jpg';
 import gameEngineThumb from '@/assets/game-engine-thumb.jpg';
+
+const profileAvatar = profileAvatarAsset.url;
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('hero');
