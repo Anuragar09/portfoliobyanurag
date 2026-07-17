@@ -29,12 +29,15 @@ import {
 } from 'lucide-react';
 
 // Import AI-generated images
-import profileAvatar from '@/assets/profile-avatar.jpg';
+import profileAvatarAsset from '@/assets/anurag-profile.jpg.asset.json';
+import resumeAsset from '@/assets/Anurag_Resume.pdf.asset.json';
 import aiChatThumb from '@/assets/ai-chat-thumb.jpg';
 import portfolioDashboardThumb from '@/assets/portfolio-dashboard-thumb.jpg';
 import designSystemThumb from '@/assets/design-system-thumb.jpg';
 import netflixCloneThumb from '@/assets/netflix-clone-thumb.jpg';
 import gameEngineThumb from '@/assets/game-engine-thumb.jpg';
+
+const profileAvatar = profileAvatarAsset.url;
 
 const Portfolio = () => {
   const [activeSection, setActiveSection] = useState('hero');
@@ -43,6 +46,9 @@ const Portfolio = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [counters, setCounters] = useState({ years: 0, projects: 0, clients: 0 });
   const [hasCounterStarted, setHasCounterStarted] = useState(false);
+  const [skillsAnimated, setSkillsAnimated] = useState(false);
+  const [animatedSkillLevels, setAnimatedSkillLevels] = useState<number[]>([]);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   // Intersection Observer for animations and counter
   useEffect(() => {
@@ -55,14 +61,23 @@ const Portfolio = () => {
               [entry.target.id]: true
             }));
             
-            // Start counter animation when stats section is visible
             if (entry.target.id === 'stats' && !hasCounterStarted) {
               setHasCounterStarted(true);
+            }
+            if (entry.target.id === 'skills') {
+              // Re-trigger skills animation every time it enters view
+              setSkillsAnimated(false);
+              setAnimatedSkillLevels(skills.map(() => 0));
+              setTimeout(() => setSkillsAnimated(true), 50);
+            }
+          } else {
+            if (entry.target.id === 'skills') {
+              setAnimatedSkillLevels(skills.map(() => 0));
             }
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.2 }
     );
 
     const sections = document.querySelectorAll('section[id]');
@@ -70,6 +85,26 @@ const Portfolio = () => {
 
     return () => observer.disconnect();
   }, [hasCounterStarted]);
+
+  // Skills bar animation
+  useEffect(() => {
+    if (skillsAnimated) {
+      const duration = 1500;
+      const steps = 40;
+      let currentStep = 0;
+      const interval = setInterval(() => {
+        currentStep++;
+        const progress = Math.min(currentStep / steps, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setAnimatedSkillLevels(skills.map(s => Math.floor(s.level * eased)));
+        if (currentStep >= steps) {
+          clearInterval(interval);
+          setAnimatedSkillLevels(skills.map(s => s.level));
+        }
+      }, duration / steps);
+      return () => clearInterval(interval);
+    }
+  }, [skillsAnimated]);
 
   // Counter animation effect
   useEffect(() => {
@@ -229,8 +264,44 @@ const Portfolio = () => {
       company: 'StartupXYZ',
       content: 'Working with ANURAG was a game-changer for our startup. He transformed our ideas into reality.',
       rating: 5
+    },
+    {
+      name: 'Priya Sharma',
+      role: 'UI/UX Designer',
+      company: 'DesignHub',
+      content: 'ANURAG bridges design and development beautifully. He implemented every pixel of my designs perfectly.',
+      rating: 5
+    },
+    {
+      name: 'David Wilson',
+      role: 'Founder',
+      company: 'InnovateLabs',
+      content: 'Highly professional and communicative. ANURAG delivered our MVP two weeks ahead of schedule!',
+      rating: 5
+    },
+    {
+      name: 'Emily Rodriguez',
+      role: 'Marketing Director',
+      company: 'GrowthCo',
+      content: 'Our website traffic doubled after ANURAG rebuilt it. Fast, modern, and SEO-optimized. Truly impressed!',
+      rating: 5
+    },
+    {
+      name: 'Rahul Verma',
+      role: 'Tech Lead',
+      company: 'CloudNine',
+      content: 'One of the most talented developers I have worked with. Clean code, great architecture, and always on time.',
+      rating: 5
     }
   ];
+
+  // Auto-slide testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -436,42 +507,68 @@ const Portfolio = () => {
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 gradient-text">Skills & Expertise</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {skills.map((skill, index) => (
-              <div key={index} className="glass-card">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-medium">{skill.name}</span>
-                  <span className="text-primary font-semibold">{skill.level}%</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {skills.map((skill, index) => {
+              const animatedLevel = animatedSkillLevels[index] ?? 0;
+              return (
+                <div key={index} className="glass-card">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-medium">{skill.name}</span>
+                    <span className="text-primary font-semibold">{animatedLevel}%</span>
+                  </div>
+                  <Progress value={animatedLevel} className="h-2" />
                 </div>
-                <Progress value={skill.level} className="h-2" />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Testimonials Section - Slider */}
       <section id="testimonials" className="py-20">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 gradient-text">What People Say</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="glass-card">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-primary text-primary" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-4">"{testimonial.content}"</p>
-                <div>
-                  <div className="font-semibold">{testimonial.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {testimonial.role} at {testimonial.company}
+
+          <div className="max-w-3xl mx-auto relative">
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentTestimonial * 100}%)` }}
+              >
+                {testimonials.map((testimonial, index) => (
+                  <div key={index} className="w-full flex-shrink-0 px-2">
+                    <div className="glass-card min-h-[220px]">
+                      <div className="flex items-center gap-1 mb-4">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                        ))}
+                      </div>
+                      <p className="text-muted-foreground mb-6 text-lg italic">"{testimonial.content}"</p>
+                      <div>
+                        <div className="font-semibold text-lg">{testimonial.name}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {testimonial.role} at {testimonial.company}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Dots */}
+            <div className="flex justify-center gap-2 mt-6">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentTestimonial(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentTestimonial ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/40'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -542,7 +639,12 @@ const Portfolio = () => {
                 className="w-full" 
                 size="lg"
                 onClick={() => {
-                  window.open('https://drive.google.com/file/d/1IMu-r6QB5pdAUhN2hWq2WfU05UiMde0N/view?usp=sharing', '_blank');
+                  const link = document.createElement('a');
+                  link.href = resumeAsset.url;
+                  link.download = 'Anurag_Resume.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
                 }}
               >
                 <Download className="h-5 w-5 mr-2" />
