@@ -46,6 +46,9 @@ const Portfolio = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [counters, setCounters] = useState({ years: 0, projects: 0, clients: 0 });
   const [hasCounterStarted, setHasCounterStarted] = useState(false);
+  const [skillsAnimated, setSkillsAnimated] = useState(false);
+  const [animatedSkillLevels, setAnimatedSkillLevels] = useState<number[]>([]);
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   // Intersection Observer for animations and counter
   useEffect(() => {
