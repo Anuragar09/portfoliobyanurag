@@ -639,7 +639,12 @@ const Portfolio = () => {
                 className="w-full" 
                 size="lg"
                 onClick={() => {
-                  window.open('https://drive.google.com/file/d/1IMu-r6QB5pdAUhN2hWq2WfU05UiMde0N/view?usp=sharing', '_blank');
+                  const link = document.createElement('a');
+                  link.href = resumeAsset.url;
+                  link.download = 'Anurag_Resume.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
                 }}
               >
                 <Download className="h-5 w-5 mr-2" />
