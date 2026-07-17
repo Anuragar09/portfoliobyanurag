@@ -264,8 +264,44 @@ const Portfolio = () => {
       company: 'StartupXYZ',
       content: 'Working with ANURAG was a game-changer for our startup. He transformed our ideas into reality.',
       rating: 5
+    },
+    {
+      name: 'Priya Sharma',
+      role: 'UI/UX Designer',
+      company: 'DesignHub',
+      content: 'ANURAG bridges design and development beautifully. He implemented every pixel of my designs perfectly.',
+      rating: 5
+    },
+    {
+      name: 'David Wilson',
+      role: 'Founder',
+      company: 'InnovateLabs',
+      content: 'Highly professional and communicative. ANURAG delivered our MVP two weeks ahead of schedule!',
+      rating: 5
+    },
+    {
+      name: 'Emily Rodriguez',
+      role: 'Marketing Director',
+      company: 'GrowthCo',
+      content: 'Our website traffic doubled after ANURAG rebuilt it. Fast, modern, and SEO-optimized. Truly impressed!',
+      rating: 5
+    },
+    {
+      name: 'Rahul Verma',
+      role: 'Tech Lead',
+      company: 'CloudNine',
+      content: 'One of the most talented developers I have worked with. Clean code, great architecture, and always on time.',
+      rating: 5
     }
   ];
+
+  // Auto-slide testimonials
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
